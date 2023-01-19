@@ -10,7 +10,7 @@ help:
 .PHONY: build-donkeysim-desktop-cpu
 build-donkeysim-desktop-cpu:
 	DOCKER_BUILDKIT=1 docker build \
-		-f tools/image/Dockerfile.donkeysim \
+		-f tools/image/Dockerfile \
 		--build-arg BASE_IMAGE=ubuntu:20.04 \
 		--build-arg PROC=cpu \
 		-t donkeysim_cpu .
@@ -18,8 +18,8 @@ build-donkeysim-desktop-cpu:
 .PHONY: build-donkeysim-desktop-gpu
 build-donkeysim-desktop-gpu:
 	DOCKER_BUILDKIT=1 docker build \
-		-f tools/image/Dockerfile.donkeysim \
-		--build-arg BASE_IMAGE=nvidia/cuda:11.6.2-devel-ubuntu20.04 \
+		-f tools/image/Dockerfile \
+		--build-arg BASE_IMAGE=nvidia/cuda:11.2.2-devel-ubuntu20.04 \
 		--build-arg PROC=gpu \
 		-t donkeysim_gpu .
 
@@ -29,6 +29,7 @@ start_donkeysim:
 	docker compose up --no-start
 	docker compose start donkeysim_${PROC}
 	docker exec -it donkeysim_${PROC}_cont /bin/bash
+	docker compose stop
 
 .PHONY: copy_from_container
 copy_from_container:

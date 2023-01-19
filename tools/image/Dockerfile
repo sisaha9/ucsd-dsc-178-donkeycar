@@ -1,7 +1,7 @@
 ARG BASE_IMAGE
 ARG PROC
 
-FROM $BASE_IMAGE as base_cpu
+FROM $BASE_IMAGE as base
 LABEL maintainer="Siddharth Saha <sisahawork@gmail.com>"
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
@@ -26,24 +26,35 @@ RUN apt update && DEBIAN_FRONTEND=noninteractive apt -y install --no-install-rec
   curl \
   wget \
   iputils-ping \
+  ffmpeg \
+  libsm6 \
+  libxext6 \
   && apt clean \
   && rm -rf /var/lib/apt/lists/*
 
 RUN python3 -m pip install --upgrade pip
 
-RUN git clone https://github.com/UCSD-DSC178/donkeycar.git && \
+RUN git clone https://github.com/sisaha9/donkeycar.git -b sid_devel && \
     cd donkeycar && \
     DEBIAN_FRONTEND=noninteractive pip3 install -U --no-cache pip install -e .[pc]
 
-RUN git clone https://github.com/tawnkramer/gym-donkeycar && \
+RUN git clone https://github.com/sisaha9/gym-donkeycar -b sid_devel && \
     cd gym-donkeycar && \
     DEBIAN_FRONTEND=noninteractive pip3 install -U --no-cache pip install -e .[gym-donkeycar]
 
-FROM base_cpu as base_gpu
+RUN DEBIAN_FRONTEND=noninteractive pip3 uninstall --no-cache tensorflow && \
+    DEBIAN_FRONTEND=noninteractive pip3 install -U --no-cache install seaborn
+
+FROM base as base_cpu
+
+RUN DEBIAN_FRONTEND=noninteractive pip3 install -U --no-cache install tensorflow==2.2.0 && \
+    DEBIAN_FRONTEND=noninteractive pip3 install -U --no-cache install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cpu
+
+FROM base as base_gpu
 
 RUN apt update && DEBIAN_FRONTEND=noninteractive apt -y install --no-install-recommends \
-    libcudnn8=8.4.1.50-1+cuda11.6 \
-    libcudnn8-dev=8.4.1.50-1+cuda11.6 \
+    libcudnn8=8.1.1.33-1+cuda11.2 \
+    libcudnn8-dev=8.1.1.33-1+cuda11.2 \
     libnvinfer8=8.4.3-1+cuda11.6 \
     libnvinfer-dev=8.4.3-1+cuda11.6 \
     libnvinfer-plugin8=8.4.3-1+cuda11.6 \
@@ -56,8 +67,12 @@ RUN apt update && DEBIAN_FRONTEND=noninteractive apt -y install --no-install-rec
     && apt clean \
     && rm -rf /var/lib/apt/lists/*
 
-RUN DEBIAN_FRONTEND=noninteractive pip3 install -U --no-cache pip install seaborn cupy-cuda116 tensorflow-gpu==2.2.0 && \
-    DEBIAN_FRONTEND=noninteractive pip3 install -U --no-cache pip install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu116
+RUN echo export CUDA_HOME="/usr/local/cuda-11.6" >> /etc/bash.bashrc && \
+    echo export PATH="/usr/local/cuda-11.6/bin:${PATH}" >> /etc/bash.bashrc && \
+    echo export LD_LIBRARY_PATH="/usr/local/cuda-11.6/lib64:${LD_LIBRARY_PATH}" >> /etc/bash.bashrc
+
+RUN DEBIAN_FRONTEND=noninteractive pip3 install -U --no-cache install cupy-cuda116 tensorflow-gpu==2.2.0 && \
+    DEBIAN_FRONTEND=noninteractive pip3 install -U --no-cache install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu112
 
 FROM base_${PROC} as final
 

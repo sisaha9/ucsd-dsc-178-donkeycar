@@ -622,19 +622,50 @@ DONKEY_SIM_PATH = "remote"
 SIM_RECORD_LOCATION = True
 SIM_RECORD_GYROACCEL = True
 SIM_RECORD_VELOCITY = True
-SIM_RECORD_LIDAR = False
+SIM_RECORD_LIDAR = True
 DONKEY_GYM_ENV_NAME = "donkey-warren-track-v0"
+CAMERA_TYPE = "MOCK"   # (PICAM|WEBCAM|CVCAM|CSIC|V4L|D435|MOCK|IMAGE_LIST)
 #DONKEY_GYM_ENV_NAME = “donkey-mountain-track-v0”
 # UCSD yellow color in RGB = 255, 205, 0
 # UCSD blue color in RGB = 0, 106, 150
-GYM_CONF = { "body_style" : "car01", "body_rgb" : (255, 205, 0), "car_name" : "UCSD-148-YourName", "font_size" : 30} # body style(donkey|bare|car01) body rgb 0-255
-GYM_CONF["racer_name"] = "UCSD-148-YourName"
+GYM_CONF = { "body_style" : "car01", "body_rgb" : (255, 205, 0), "car_name" : "UCSD-DSC-178-YourName", "font_size" : 30} # body style(donkey|bare|car01) body rgb 0-255
+GYM_CONF["racer_name"] = "UCSD-DSC-178-YourName"
 GYM_CONF["country"] = "USA"
-GYM_CONF["bio"] = "Something_about_you, ex: Made in Brazil"
+GYM_CONF["bio"] = "Representing HDSI"
+GYM_CONF["cam_config"] = {
+    "img_w": 160, # image width
+    "img_h": 120, # image height
+    "img_d": 3, # depth in dimensions
+    "img_enc": "JPG", # encoding format to send images in
+    "fov": 70.0, # The field of view
+    "fish_eye_x": 0.0, # controls distortion
+    "fish_eye_y": 0.0, # controls distortion
+    "offset_x": 0.0, #offset_x moves camera left/right
+    "offset_y": 0.0, #offset_y moves camera up/down
+    "offset_z": 0.0, #offset_z moves camera forward/back
+    "rot_x": 0.0, #rot_x will rotate the camera laterally
+    "rot_y": 0.0, #rot_y will rotate the camera up / down
+    "rot_z": 0.0, #rot_z will rotate the camera around forward vector
+}
+GYM_CONF["lidar_config"] = {
+    "deg_per_sweep_inc": 2.0, # Angular resolution
+    "deg_ang_down": 10,
+    "deg_ang_delta": -1.0,
+    "num_sweeps_levels": 1, # Number of sweeps
+    "max_range": 25.0,
+    "noise": 0.0,
+    "offset_x": 0.0,
+    "offset_y": 0.0,
+    "offset_z": 0.0,
+    "rot_x": 0.0,
+}
+LIDAR_LOWER_LIMIT = 0 # angles that will be recorded. Use this to block out obstructed areas on your car, or looking backwards. Note that for the RP A1M8 Lidar, "0" is in the direction of the motor
+LIDAR_UPPER_LIMIT = 360
 #
 # SIM_HOST = "donkey-sim.roboticist.dev"
 SIM_ARTIFICIAL_LATENCY = 0
 SIM_HOST = "127.0.0.1"              # when racing on virtual-race-league use host "roboticists.dev"
+# SIM_HOST = "roboticists.dev"
 #SIM_ARTIFICIAL_LATENCY = 30          # Use the value when you ping roboticists.dev. When racing on virtual-race league, use 0 (zero)
 
 # When racing, to give the ai a boost, configure these values.
@@ -645,7 +676,8 @@ AI_LAUNCH_KEEP_ENABLED = True      # when False ( default) you will need to hit 
 # When using a joystick modify these specially USE_JOYSTICK_AS_DEFAULT = True
 # JOYSTICK
 # USE_JOYSTICK_AS_DEFAULT = True     #when starting the manage.py, when True, will not require a --js option to use the joystick
-JOYSTICK_MAX_THROTTLE = 1.0         #this scalar is multiplied with the -1 to 1 throttle value to limit the maximum throttle. This can help if you drop the controller or just don't need the full speed available.
+CONTROLLER_TYPE = 'xbox' #(ps3|ps4|xbox|pigpio_rc|nimbus|wiiu|F710|rc3|MM1|custom) custom will run the my_joystick.py controller written by the `donkey createjs` command
+JOYSTICK_MAX_THROTTLE = 0.1         #this scalar is multiplied with the -1 to 1 throttle value to limit the maximum throttle. This can help if you drop the controller or just don't need the full speed available.
 JOYSTICK_STEERING_SCALE = 0.8       #some people want a steering that is less sensitve. This scalar is multiplied with the steering -1 to 1. It can be negative to reverse dir.
 AUTO_RECORD_ON_THROTTLE = True      #if true, we will record whenever throttle is not zero. if false, you must manually toggle recording with some other trigger. Usually circle button on joystick.
 JOYSTICK_DEADZONE = 0.2             # when non zero, this is the smallest throttle before recording triggered.

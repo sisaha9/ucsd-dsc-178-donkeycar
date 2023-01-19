@@ -7,8 +7,6 @@ services:
     privileged: true
     stdin_open: true
     tty: true
-   #  volumes:
-   #  - /home/triton-ai/Downloads/DonkeySimLinux:/donkeysim
     container_name: donkeysim_gpu_cont
     runtime: nvidia
     environment:
@@ -20,6 +18,4 @@ services:
     privileged: true
     stdin_open: true
     tty: true
-   #  volumes:
-   #  - /home/triton-ai/Downloads/DonkeySimLinux:/donkeysim
     container_name: donkeysim_cpu_cont
