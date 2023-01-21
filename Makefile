@@ -19,7 +19,7 @@ build-donkeysim-desktop-cpu:
 build-donkeysim-desktop-gpu:
 	DOCKER_BUILDKIT=1 docker build \
 		-f tools/image/Dockerfile \
-		--build-arg BASE_IMAGE=nvidia/cuda:11.2.2-devel-ubuntu20.04 \
+		--build-arg BASE_IMAGE=nvidia/cuda:11.7.1-devel-ubuntu20.04 \
 		--build-arg PROC=gpu \
 		-t donkeysim_gpu .
 
