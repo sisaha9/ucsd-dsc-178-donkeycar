@@ -35,14 +35,6 @@ RUN apt update && DEBIAN_FRONTEND=noninteractive apt -y install --no-install-rec
 
 RUN python3 -m pip install --upgrade pip
 
-RUN git clone https://github.com/sisaha9/donkeycar.git -b sid_devel && \
-    cd donkeycar && \
-    DEBIAN_FRONTEND=noninteractive pip3 install -U --no-cache install -e .[pc]
-
-RUN git clone https://github.com/sisaha9/gym-donkeycar -b sid_devel && \
-    cd gym-donkeycar && \
-    DEBIAN_FRONTEND=noninteractive pip3 install -U --no-cache install -e .[gym-donkeycar]
-
 RUN DEBIAN_FRONTEND=noninteractive pip3 uninstall --no-cache tensorflow && \
     DEBIAN_FRONTEND=noninteractive pip3 install -U --no-cache install seaborn
 
@@ -76,6 +68,14 @@ RUN DEBIAN_FRONTEND=noninteractive pip3 install -U --no-cache install cupy-cuda1
     DEBIAN_FRONTEND=noninteractive pip3 install -U --no-cache install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu117
 
 FROM base_${PROC} as final
+
+RUN git clone https://github.com/sisaha9/donkeycar.git -b sid_devel && \
+    cd donkeycar && \
+    DEBIAN_FRONTEND=noninteractive pip3 install -U --no-cache install -e .[pc]
+
+RUN git clone https://github.com/sisaha9/gym-donkeycar -b sid_devel && \
+    cd gym-donkeycar && \
+    DEBIAN_FRONTEND=noninteractive pip3 install -U --no-cache install -e .[gym-donkeycar]
 
 CMD ["/bin/bash"]
 
