@@ -16,6 +16,7 @@ RUN apt update && DEBIAN_FRONTEND=noninteractive apt -y install --no-install-rec
   build-essential \
   sudo \
   git \
+  udev \
   python3-pip \
   python3-setuptools \
   vim \
@@ -68,6 +69,16 @@ RUN DEBIAN_FRONTEND=noninteractive pip3 install -U --no-cache install cupy-cuda1
     DEBIAN_FRONTEND=noninteractive pip3 install -U --no-cache install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu117
 
 FROM base_${PROC} as final
+
+RUN pip3 install --no-cache git+https://github.com/sisaha9/PyVESC.git@sid-devel
+
+RUN git clone https://github.com/luxonis/depthai.git && \
+    git clone https://github.com/luxonis/depthai-python.git && \
+    cd depthai && \
+    curl -fL https://docs.luxonis.com/install_dependencies.sh | bash && \
+    python3 install_requirements.py && \
+    cd ../depthai-python/examples && \
+    python3 install_requirements.py 
 
 RUN git clone https://github.com/sisaha9/donkeycar.git -b sid_devel && \
     cd donkeycar && \

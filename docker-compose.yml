@@ -1,21 +1,36 @@
-version: '3.3'
+version: '3.9'
 
 services:
-   donkeysim_gpu:
-    image: donkeysim_gpu
-    network_mode: "host"
-    privileged: true
-    stdin_open: true
-    tty: true
-    container_name: donkeysim_gpu_cont
-    runtime: nvidia
-    environment:
-      - NVIDIA_VISIBLE_DEVICES=all
+   donkeycar_gpu:
+      image: donkeycar_gpu
+      network_mode: "host"
+      privileged: true
+      stdin_open: true
+      tty: true
+      container_name: donkeycar_gpu_cont
+      volumes:
+         - /dev/bus/usb:/dev/bus/usb
+         - /tmp/.X11-unix:/tmp/.X11-unix
+      device_cgroup_rules:
+         - 'c 189:* rmw'
+      runtime: nvidia
+      environment:
+         - NVIDIA_VISIBLE_DEVICES=all
+         - DISPLAY
+
    
-   donkeysim_cpu:
-    image: donkeysim_cpu
-    network_mode: "host"
-    privileged: true
-    stdin_open: true
-    tty: true
-    container_name: donkeysim_cpu_cont
+   donkeycar_cpu:
+      image: donkeycar_cpu
+      network_mode: "host"
+      privileged: true
+      stdin_open: true
+      tty: true
+      container_name: donkeycar_cpu_cont
+      volumes:
+         - /dev/bus/usb:/dev/bus/usb
+         - /tmp/.X11-unix:/tmp/.X11-unix
+      device_cgroup_rules:
+         - 'c 189:* rmw'
+      environment:
+         - DISPLAY
+   
